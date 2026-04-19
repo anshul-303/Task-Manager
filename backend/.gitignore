@@ -1,0 +1,20 @@
+# Dependency folders
+node_modules/
+
+# Compiled output (TypeScript to JavaScript)
+dist/
+build/
+out/
+
+# Environment variables (Secrets)
+.env
+*.env.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS related files
+.DS_Store
+Thumbs.db
