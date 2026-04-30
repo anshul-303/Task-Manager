@@ -14,7 +14,7 @@ export default function Signup() {
       e.preventDefault();
       const data = await SignupUser(email, password);
       // console.log(data.message);
-      navigate("/tasks");
+      navigate("/login");
     } catch (error) {
       console.log(error);
     }
