@@ -76,9 +76,9 @@ export async function LoginUser(req: Request, res: Response): Promise<void> {
     const accessToken = jwt.sign(user, secret, { expiresIn: "1h" });
     res
       .cookie("accessToken", accessToken, {
-        httpOnly: process.env.COOKIE_HTTP_ONLY ==="true",
-        secure: process.env.HTTP_SECURE ==="true",
-        sameSite: "lax",
+        httpOnly: process.env.COOKIE_HTTP_ONLY === "true", //HTTP protocol or HTTPS
+        secure: process.env.HTTP_SECURE === "true",  //Basically let's us know whether HTTPS is in use or no.
+        sameSite: "lax", //Allows cross origin requests but only when the user has visited the site by clicking a link and not by forging the request.
         maxAge: 3600 * 1000,
       })
       .status(200)
