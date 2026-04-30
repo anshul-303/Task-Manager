@@ -1,14 +1,23 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { LoginUser } from "../api/auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Login form submitted!");
+    try {
+      e.preventDefault();
+      const data = await LoginUser(email, password);
+      console.log(data.message);
+      navigate("/tasks");
+    } catch (error) {
+      console.log("Error occured : ", error);
+    }
   };
+
   return (
     <div className="w-screen min-h-screen bg-zinc-900 text-white flex items-center justify-center">
       <form

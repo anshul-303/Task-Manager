@@ -43,6 +43,6 @@ export async function LoginUser(
   if (!res.ok) {
     throw new Error(data.message);
   }
-  console.log(data.message);
+  // console.log(data.message);
   return data;
 }
