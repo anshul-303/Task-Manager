@@ -56,3 +56,23 @@ export async function deleteTask(
   //   console.log(data.message);
   return data;
 }
+
+export async function updateCompletedStatus(
+  id: string,
+  completed: boolean,
+): Promise<{ message: string; rows: Task[] }> {
+  const res = await fetch(`${URL}/tasks/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    method: "PUT",
+    body: JSON.stringify({ completed: completed }),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
+  //   console.log(data.message);
+  return data;
+}

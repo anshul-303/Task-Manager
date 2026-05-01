@@ -1,8 +1,14 @@
 import { useState } from "react";
 import type { TaskbarProps } from "../types/types";
-import { deleteTask } from "../api/handleTasks";
+import { deleteTask, updateCompletedStatus } from "../api/handleTasks";
 
-export default function Taskbar({ id, task, completed, srNo, setTasks }: TaskbarProps) {
+export default function Taskbar({
+  id,
+  task,
+  completed,
+  srNo,
+  setTasks,
+}: TaskbarProps) {
   const [completedState, setCompletedState] = useState(completed);
 
   return (
@@ -16,24 +22,26 @@ export default function Taskbar({ id, task, completed, srNo, setTasks }: Taskbar
         <label className="flex items-center gap-2 cursor-pointer group">
           <input
             type="checkbox"
-            onChange={(e) => {
+            onChange={async (e) => {
               setCompletedState(e.target.checked);
+              const data = await updateCompletedStatus(id, completedState);
+              setTasks(data.rows);
             }}
             checked={completedState}
             className="w-5 h-5 accent-blue-500 cursor-pointer"
-            readOnly
           />
           <span className="text-sm text-zinc-400 group-hover:text-zinc-200 transition-colors">
             isCompleted
           </span>
         </label>
 
-        <button 
-        onClickCapture={async ()=>{
-            const data=await deleteTask(id);
-            setTasks(data.rows)
-        }}
-        className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md transition-colors">
+        <button
+          onClickCapture={async () => {
+            const data = await deleteTask(id);
+            setTasks(data.rows);
+          }}
+          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md transition-colors"
+        >
           Delete
         </button>
       </div>

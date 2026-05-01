@@ -91,3 +91,38 @@ export async function deleteTask(req: HandleTaskRequest, res: Response) {
     res.status(500).json({ message: "Internal server error!" });
   }
 }
+
+export async function updateCompletedStatus(
+  req: HandleTaskRequest,
+  res: Response,
+) {
+  try {
+    if (!req.userInfo) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    console.log("Updating completed status of task...");
+    const userId = req.userInfo.id;
+    const { id } = req.params;
+    const { completed } = req.body;
+
+    await db.execute(`UPDATE todos SET completed=? WHERE user_id=? AND id=?;`, [
+      !completed,
+      userId,
+      id,
+    ]);
+
+    //Fetching new set of updated tasks
+    const [rows] = await db.execute<RowDataPacket[]>(
+      `SELECT id , title as task, completed  from todos WHERE user_id=?;`,
+      [userId],
+    );
+
+    res.status(200).json({
+      message: "Task completed status updated successfully!",
+      rows: rows,
+    });
+  } catch (error) {
+    console.log("Error occured : ", error);
+    res.status(500).json({ message: "Internal server error!" });
+  }
+}
