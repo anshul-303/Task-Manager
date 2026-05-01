@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { RowDataPacket } from "mysql2";
 import bcrypt from "bcrypt";
@@ -77,7 +77,7 @@ export async function LoginUser(req: Request, res: Response): Promise<void> {
     res
       .cookie("accessToken", accessToken, {
         httpOnly: process.env.COOKIE_HTTP_ONLY === "true", //HTTP protocol or HTTPS
-        secure: process.env.HTTP_SECURE === "true",  //Basically let's us know whether HTTPS is in use or no.
+        secure: process.env.HTTP_SECURE === "true", //Basically let's us know whether HTTPS is in use or no.
         sameSite: "lax", //Allows cross origin requests but only when the user has visited the site by clicking a link and not by forging the request.
         maxAge: 3600 * 1000,
       })
@@ -86,6 +86,23 @@ export async function LoginUser(req: Request, res: Response): Promise<void> {
     return;
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Internal server error!" });
+  }
+}
+
+export function LogoutUser(req: Request, res: Response): void {
+  try {
+    res
+      .clearCookie("accessToken", {
+        httpOnly: process.env.COOKIE_HTTP_ONLY === "true",
+        secure: process.env.COOKIE_SECURE === "true",
+        sameSite: "lax",
+      })
+
+      .status(200)
+      .json({ message: "Logged the user out!" });
+    return;
+  } catch (error) {
     res.status(500).json({ message: "Internal server error!" });
   }
 }

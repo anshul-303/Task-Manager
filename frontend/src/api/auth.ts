@@ -46,3 +46,22 @@ export async function LoginUser(
   // console.log(data.message);
   return data;
 }
+
+
+export async function LogoutUser(
+
+): Promise<{ message: string }> {
+  const res = await fetch(`${URL}/auth/logout`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    method: "POST",
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
+  // console.log(data.message);
+  return data;
+}
