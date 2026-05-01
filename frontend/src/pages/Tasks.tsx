@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Taskbar from "../components/Taskbar";
+
 import type { Task } from "../types/types";
+
 import { LogoutUser } from "../api/auth";
 import { useNavigate } from "react-router-dom";
+import { addTask, fetchAllTasks } from "../api/handleTasks";
 
 export default function Tasks() {
-  // Mock data for the 5 bars
-  const mockTasks = [
-    { id: 1, task: "Complete the PERN stack dashboard", completed: false },
-    { id: 2, task: "Practice C++ STL for Codeforces", completed: true },
-  ];
+  const [currentTask, setCurrentTask] = useState("");
+
+  useEffect(() => {
+    const callFetchAllTasks = async (): Promise<void> => {
+      const data = await fetchAllTasks();
+      setTasks(data.rows);
+    };
+    callFetchAllTasks();
+  }, []);
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const navigate = useNavigate();
@@ -19,10 +26,22 @@ export default function Tasks() {
       <div className="w-full max-w-4xl flex items-center gap-4 mb-12">
         <input
           type="text"
+          value={currentTask}
+          onChange={(e) => {
+            setCurrentTask(e.target.value);
+          }}
           placeholder="Enter a new task..."
           className="flex-1 p-3 rounded-md bg-white text-zinc-900 outline-none focus:ring-2 focus:ring-blue-400"
         />
-        <button className="px-6 py-3 bg-gradient-to-r from-pink-500 to-blue-500 text-white font-semibold rounded-md hover:opacity-90 transition-opacity  transition-transform active:scale-150 duration-400">
+        <button
+          onClick={async () => {
+            const data = await addTask(currentTask);
+            console.log(data.rows);
+            setTasks(data.rows);
+            setCurrentTask("");
+          }}
+          className="px-6 py-3 bg-gradient-to-r from-pink-500 to-blue-500 text-white font-semibold rounded-md hover:opacity-90 transition-opacity  transition-transform active:scale-150 duration-400"
+        >
           Submit
         </button>
         <button
@@ -43,13 +62,14 @@ export default function Tasks() {
       <h1 className="text-4xl font-bold mb-8 tracking-tight">Tasks</h1>
 
       <div className="w-full max-w-4xl space-y-4">
-        {mockTasks.map((element, index) => (
+        {tasks.map((element, index) => (
           <Taskbar
             key={element.id}
             id={element.id}
             srNo={index + 1}
             task={element.task}
-            isCompleted={element.completed}
+            completed={element.completed}
+            setTasks={setTasks}
           />
         ))}
       </div>

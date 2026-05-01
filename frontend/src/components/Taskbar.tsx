@@ -1,8 +1,9 @@
 import { useState } from "react";
 import type { TaskbarProps } from "../types/types";
+import { deleteTask } from "../api/handleTasks";
 
-export default function Taskbar({ id, task, isCompleted, srNo }: TaskbarProps) {
-  const [completed, setCompleted] = useState(isCompleted);
+export default function Taskbar({ id, task, completed, srNo, setTasks }: TaskbarProps) {
+  const [completedState, setCompletedState] = useState(completed);
 
   return (
     <div className="flex items-center justify-between p-4 bg-zinc-800 border border-zinc-700 rounded-lg shadow-sm">
@@ -16,9 +17,9 @@ export default function Taskbar({ id, task, isCompleted, srNo }: TaskbarProps) {
           <input
             type="checkbox"
             onChange={(e) => {
-              setCompleted(e.target.checked);
+              setCompletedState(e.target.checked);
             }}
-            checked={completed}
+            checked={completedState}
             className="w-5 h-5 accent-blue-500 cursor-pointer"
             readOnly
           />
@@ -27,7 +28,12 @@ export default function Taskbar({ id, task, isCompleted, srNo }: TaskbarProps) {
           </span>
         </label>
 
-        <button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md transition-colors">
+        <button 
+        onClickCapture={async ()=>{
+            const data=await deleteTask(id);
+            setTasks(data.rows)
+        }}
+        className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md transition-colors">
           Delete
         </button>
       </div>

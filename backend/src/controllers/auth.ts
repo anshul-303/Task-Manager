@@ -45,7 +45,7 @@ export async function SignupUser(req: Request, res: Response): Promise<void> {
 export async function LoginUser(req: Request, res: Response): Promise<void> {
   try {
     const { email, password } = req.body as { email: string; password: string };
-    console.log(email, password);
+    // console.log(email, password);
 
     if (!email || !password) {
       res.status(400).json({ message: "All fields are required!" });
